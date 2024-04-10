@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<schedule id="Prof. Lucia">
+    <event>
+        <name>CS3500 Morning Lecture</name>
+        <time>
+            <start-day>Tuesday</start-day>
+            <start>0950</start>
+            <end-day>Tuesday</end-day>
+            <end>1130</end>
+        </time>
+        <location>
+            <online>false</online>
+            <place>Churchill Hall 101</place>
+        </location>
+        <users>
+            <uid>Prof. Lucia</uid>
+            <uid>Student Anon</uid>
+            <uid>Chat</uid>
+        </users>
+    </event>
+    <event>
+        <name>CS3500 Afternoon Lecture</name>
+        <time>
+            <start-day>Tuesday</start-day>
+            <start>1335</start>
+            <end-day>Tuesday</end-day>
+            <end>1515</end>
+        </time>
+        <location>
+            <online>false</online>
+            <place>Churchill Hall 101</place>
+        </location>
+        <users>
+            <uid>Prof. Lucia</uid>
+            <uid>Chat</uid>
+        </users>
+    </event>
+    <event>
+        <name>Sleep</name>
+        <time>
+            <start-day>Friday</start-day>
+            <start>1800</start>
+            <end-day>Sunday</end-day>
+            <end>1200</end>
+        </time>
+        <location>
+            <online>true</online>
+            <place>Home</place>
+        </location>
+        <users>
+            <uid>Prof. Lucia</uid>
+        </users>
+    </event>
+</schedule>
