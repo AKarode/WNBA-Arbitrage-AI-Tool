@@ -23,7 +23,16 @@ redis==5.0.8
 # sendgrid==6.11.0
 # twilio==9.2.4
 
-# Development
+# Web Scraping & Automation
+aiohttp==3.10.10
+selenium==4.26.1
+beautifulsoup4==4.12.3
+webdriver-manager==4.0.2
+
+# Development & Testing
 pytest==8.4.0
+pytest-asyncio==0.24.0
+pytest-cov==6.0.0
+pytest-mock==3.14.0
 black==24.8.0
 flake8==7.1.1 

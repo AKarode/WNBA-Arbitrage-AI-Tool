@@ -4,6 +4,7 @@ import uvicorn
 
 # Import API routers
 from app.api.odds import router as odds_router
+from app.api.multi_source_odds import router as multi_source_odds_router
 
 app = FastAPI(
     title="WNBA Arbitrage AI Tool",
@@ -22,6 +23,7 @@ app.add_middleware(
 
 # Include API routers
 app.include_router(odds_router)
+app.include_router(multi_source_odds_router)
 
 @app.get("/")
 async def root():
