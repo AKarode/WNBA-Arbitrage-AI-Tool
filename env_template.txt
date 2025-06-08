@@ -1,0 +1,37 @@
+# WNBA Arbitrage AI Tool - Environment Variables Template
+# Copy to .env and fill in your actual values
+
+# Database Configuration
+DATABASE_URL=postgresql://username:password@localhost:5432/wnba_arbitrage
+REDIS_URL=redis://localhost:6379
+
+# The Odds API
+ODDS_API_KEY=your_odds_api_key_here
+ODDS_API_BASE_URL=https://api.the-odds-api.com/v4
+
+# OpenAI API (for LLM features)
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Anthropic Claude API (alternative LLM)
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# Email Service (SendGrid)
+SENDGRID_API_KEY=your_sendgrid_api_key_here
+FROM_EMAIL=alerts@your-domain.com
+
+# SMS Service (Twilio)
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_PHONE_NUMBER=your_twilio_phone_number
+
+# Application Settings
+SECRET_KEY=your_secret_key_here
+DEBUG=True
+LOG_LEVEL=INFO
+
+# Offshore Sportsbooks (add as needed)
+SPORTSBOOK_API_KEYS={}
+
+# News APIs
+ESPN_API_KEY=your_espn_api_key_here
+TWITTER_BEARER_TOKEN=your_twitter_bearer_token_here 

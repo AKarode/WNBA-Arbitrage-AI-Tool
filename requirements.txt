@@ -1,0 +1,29 @@
+fastapi==0.115.12
+uvicorn==0.34.3
+pandas==2.3.0
+requests==2.32.3
+python-dotenv==1.1.0
+httpx==0.28.1
+
+# Database
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.35
+redis==5.0.8
+
+# ML Libraries (to be added in later phases)
+# scikit-learn==1.5.1
+# xgboost==2.1.1
+# tensorflow==2.17.0
+
+# LLM APIs (to be added in later phases)
+# openai==1.45.0
+# anthropic==0.34.2
+
+# Communication (to be added in later phases)
+# sendgrid==6.11.0
+# twilio==9.2.4
+
+# Development
+pytest==8.4.0
+black==24.8.0
+flake8==7.1.1 
