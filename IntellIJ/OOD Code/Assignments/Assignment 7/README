@@ -1,0 +1,280 @@
+The `CentralSystem` class implements the `IScheduler` interface, serving as a comprehensive system for scheduling events. It facilitates the management of users and their respective events through a variety of operations including addition, removal, and updates of both users and events. Here's a detailed breakdown of its components and functionalities:
+
+### Class Overview: CentralSystem
+- **Implements:** `IScheduler` interface
+- **Purpose:** To manage a system for scheduling events, including handling users and their events.
+
+### Fields
+- **`List<User> users`**
+  - A list to store user objects within the system. It is initialized as an `ArrayList<User>` in the constructor.
+
+### Constructor
+- **`CentralSystem()`**
+  - Initializes the `users` list as a new instance of `ArrayList<>`, ensuring the system is ready to manage users upon instantiation.
+
+### Methods Implemented from `IScheduler`
+
+- **`void addUser(User u)`**
+  - Adds a new user to the system if they don't already exist, based on the user's name.
+
+- **`void removeUser(User u)`**
+  - Removes a user from the system. Throws `IllegalArgumentException` if the provided user is `null`.
+
+- **`User getUser(String name)`**
+  - Retrieves a user by their name. Throws `IllegalArgumentException` if the name is `null` or if the user cannot be found.
+
+- **`void createEvent(Event event)`**
+  - Adds an event to the host's and invited users' schedules. Ensures that the host exists in the system and has a schedule to which the event can be added.
+
+### Additional Methods
+
+- **`void changeEventName(String eventName, String newName)`**
+  - Updates the name of an existing event across all users who have it in their schedules.
+
+- **`void changeEventLocation(String eventName, String newLocation, boolean isOnline)`**
+  - Updates the location and online status of an event, affecting all schedules containing the event.
+
+- **`boolean changeEventTiming(String eventName, String newStartDay, String newStartTime, String newEndDay, String newEndTime)`**
+  - Adjusts the timing for a specified event. Validates the new timing does not conflict with existing events before updating.
+
+- **`boolean changeEventHost(String eventName, User newHost)`**
+  - Transfers the hosting responsibilities of an event to a new user, if the event and new host are valid within the system.
+
+- **`void changeEventInvitedUsers(String eventName, List<User> newInvitedUsers)`**
+  - Modifies the list of invited users for an event, impacting all schedules where the event is present.
+
+- **`void updateEvent(Event originalEvent, Event updatedEvent)`**
+  - Replaces an existing event with an updated version in all relevant schedules, maintaining the integrity of host and invited users' schedules.
+
+- **`void removeEvent(Event eventToRemove)`**
+  - Erases an event from all users' schedules within the system, effectively canceling it.
+
+- **`void addUserFromXML(String filePath)`**
+  - Incorporates a user into the system by parsing their details from an XML file, provided they don't already exist in the system.
+
+- **`void exportUserScheduleToXML(String userName, String filePath)`**
+  - Exports a specified user's schedule to an XML file, allowing for external storage and analysis of event data.
+
+-------
+
+  The `Event` class represents a detailed event entity within a scheduling system. It encapsulates all necessary information about an event, including its name, location, online status, timing, host, and list of invited users. Additionally, the class includes methods to ensure the validity of event times and to check for time overlaps with other events. Here's an in-depth documentation of the class components and functionalities:
+
+  ### Class Overview: Event
+  - **Purpose:** To model events with detailed attributes and validate their timing and location settings, supporting both online and in-person events.
+
+  ### Fields
+  - **`String name`**
+    - The name of the event.
+  - **`String location`**
+    - The location of the event, which can be a physical location or a URL if the event is online.
+  - **`boolean onlineStatus`**
+    - A flag indicating if the event is online (`true`) or in-person (`false`).
+  - **`String startTime`**
+    - The starting time of the event in HHMM (24-hour) format.
+  - **`String startDay`**
+    - The day of the week when the event starts.
+  - **`String endTime`**
+    - The ending time of the event in HHMM (24-hour) format.
+  - **`String endDay`**
+    - The day of the week when the event ends.
+  - **`User host`**
+    - The host of the event.
+  - **`List<User> invitedUsers`**
+    - A list of users invited to the event.
+
+  ### Static Fields
+  - **`Map<String, Integer> DAY_TO_INT`**
+    - A mapping from days of the week to integer values (Monday=1, ..., Sunday=7) for easier time calculations.
+  - **`int MINUTES_IN_A_WEEK`**
+    - The total number of minutes in a week, used to validate event duration.
+
+  ### Constructor
+  - **`Event(String name, String location, boolean onlineStatus, String startDay, String startTime, String endDay, String endTime, User host, List<User> invitedUsers)`**
+    - Initializes an `Event` object with the specified parameters. Validates the timing of the event to ensure it is within a single week and the times are valid. Throws `IllegalArgumentException` if the timing is not valid.
+
+  ### Private Static Methods
+  - **`boolean isValidTime(String time)`**
+    - Validates a time string in HHMM format. Returns `true` if the time is valid, `false` otherwise.
+  - **`boolean isWithinAWeek(String startDay, String startTime, String endDay, String endTime)`**
+    - Determines if the event's duration is within a single week and starts before it ends. Returns `true` if the conditions are met, `false` otherwise.
+
+  ### Public Methods
+  - **`boolean isOverLapping(Event other)`**
+    - Checks if this event overlaps in timing with another event. Returns `true` if there is an overlap, `false` otherwise.
+
+------
+
+The `Schedule` class models a schedule specifically associated with a user, facilitating the management of events within that schedule. This class ensures the smooth handling of events, including their addition and removal, while enforcing a rule that no two events within the same schedule may overlap in time. Below is a detailed documentation of its structure and functionalities:
+
+### Class Overview: Schedule
+- **Purpose:** To manage a user's schedule by handling events, ensuring that there are no overlaps between scheduled events.
+
+### Fields
+- **`User owner`**
+  - The user to whom the schedule belongs. This field links a `Schedule` instance directly with a `User`, establishing ownership and accountability for the events within the schedule.
+- **`List<Event> events`**
+  - A list of `Event` objects representing the events scheduled for the user. This list is managed to ensure that events do not overlap, maintaining the integrity and feasibility of the schedule.
+
+### Constructor
+- **`Schedule(User owner)`**
+  - Initializes a new instance of `Schedule`, assigning ownership to the specified `User` and initializing the `events` list as an empty `ArrayList<Event>`.
+
+### Methods
+- **`void addEvent(Event e)`**
+  - Attempts to add a new `Event` to the schedule. Before addition, it checks to ensure there is no overlap with existing events. If an overlap is detected, it throws an `IllegalArgumentException`, preventing the addition of the event to the schedule.
+- **`void removeEvent(Event e)`**
+  - Removes an `Event` from the schedule. This method directly removes the specified `Event` from the `events` list, assuming that the event is already present in the list.
+
+### Usage and Behavior
+- The primary responsibility of the `Schedule` class is to maintain a coherent and conflict-free schedule for a user.
+- The `addEvent` method is key to the functionality of the `Schedule`, as it enforces the no-overlap rule, which is critical for the practical usability of the schedule. Before an event is added, it is compared against existing events for any time overlaps using the `isOverLapping` method defined in the `Event` class. This design choice ensures that all scheduled events can occur as planned without any timing conflicts.
+- The `removeEvent` method provides flexibility in managing the schedule, allowing for events to be canceled or removed as circumstances change.
+
+### Design Considerations
+- The design of the `Schedule` class emphasizes robustness and integrity in schedule management. By preventing event overlaps, it ensures a realistic and workable schedule for the user.
+- The association between the `Schedule` and its `owner` (a `User`) allows for clear accountability and personalization of schedules within a broader system where multiple users manage their individual schedules.
+- This class can serve as a foundational component of a larger system for event management, scheduling applications, or personal calendar systems, highlighting its utility and versatility in various domains.
+
+------
+
+The `TextView` class is designed to generate and present a textual representation of a user's schedule, catering to a variety of output needs through the use of the `Appendable` interface. This design choice allows for significant flexibility in terms of where the schedule's textual output can be directed, including, but not limited to, `StringBuilder`, `StringBuffer`, or directly to `System.out`. Below is a detailed documentation of its structure and functionalities:
+
+### Class Overview: TextView
+- **Purpose:** To generate a textual representation of a user's schedule, organized by days of the week and detailing each event's specifics such as name, time, location, online status, and list of invitees.
+
+### Static Fields
+- **`String[] DAYS_OF_THE_WEEK`**
+  - An array representing the days of the week, used to structure the schedule's output by day.
+
+### Methods
+- **`static void buildUserSchedule(User user, Appendable appendable)`**
+  - This method builds the textual representation of a given user's schedule and appends it to an `Appendable` object. It iterates through each day of the week, filtering events for that day and appending event details in a structured format. If an `IOException` occurs during this process, it's caught and handled within the method.
+
+- **`static void render(Appendable appendable)`**
+  - A utility method designed primarily for debugging or console output purposes. It renders the content of an `Appendable` object to the standard output. This method is useful for quickly viewing the constructed schedule text without needing to manually handle the `Appendable`'s contents.
+
+### Usage and Behavior
+- The `buildUserSchedule` method is the core functionality of the `TextView` class, enabling the conversion of a user's schedule into a structured textual format. By utilizing the `Appendable` interface, this method offers flexibility in terms of output destination, making it adaptable to various use cases such as logging, displaying in a UI, or simple console output.
+- The method meticulously organizes the schedule's output by days of the week, ensuring that events are easily readable and accessible. It includes comprehensive details about each event, enhancing the utility and informativeness of the textual schedule.
+- The `render` method complements `buildUserSchedule` by providing a straightforward way to output the constructed schedule text, simplifying debugging and presentation in console-based applications.
+
+### Design Considerations
+- The choice to use `Appendable` as the output destination for the schedule's textual representation is significant, as it abstracts away the specifics of the output medium. This allows the `TextView` class to be used in a wide array of contexts without modification.
+- Handling `IOException` within the methods ensures that the class remains self-contained and that errors do not propagate unnecessarily, making the class more robust and user-friendly.
+- This class can easily integrate with broader systems designed for user management, scheduling, or event planning, highlighting its versatility and utility across different domains.
+
+-------
+
+The `User` class is a simple yet fundamental component in a system designed to manage users and their schedules, typically within an event scheduling or calendar management application. It encapsulates the essential information about a user, including their name and a personal schedule, facilitating the organization and tracking of events specific to each user. Below is a detailed documentation of its structure and functionalities:
+
+### Class Overview: User
+- **Purpose:** To represent a user within the system, holding information about the user's name and managing their personal schedule of events.
+
+### Fields
+- **`String name`**
+  - Represents the name of the user. This field is public, allowing direct access and modification, which can be useful in settings where user information is dynamically updated.
+- **`Schedule schedule`**
+  - An instance of the `Schedule` class, representing the user's personal schedule. This association between `User` and `Schedule` is critical for managing events that are specific to the user.
+
+### Constructor
+- **`User(String name)`**
+  - Initializes a new instance of `User` with the given name. It also creates a new `Schedule` for the user, passing `this` to the `Schedule` constructor to establish a link between the user and their schedule.
+
+### Methods
+- **`public String toString()`**
+  - Overrides the `toString` method from the `Object` class to return the user's name. This method enhances the usability of the `User` class, especially when user instances need to be printed or logged, providing a straightforward representation of the user by their name.
+
+### Usage and Behavior
+- The `User` class is designed with simplicity and functionality in mind. By associating each user with a unique schedule through the `Schedule` class, it lays the foundation for a comprehensive event management system where users can have personalized schedules.
+- The direct association between `User` and `Schedule` means that operations related to event management (such as adding or removing events) can be handled through the user's schedule instance, promoting encapsulation and object-oriented design principles.
+- The public accessibility of the `name` field implies that user names can be easily accessed and modified. In practice, depending on the system's requirements, it might be beneficial to implement getter and setter methods for the `name` field to provide additional control over how user names are modified.
+
+### Design Considerations
+- The decision to directly instantiate a new `Schedule` within the `User` constructor ensures that every user has a personal schedule upon creation. This design choice simplifies the management of user schedules and avoids the need for external code to manually assign schedules to users.
+- Overriding the `toString` method to return the user's name makes the `User` class more intuitive to use, especially in contexts where user information needs to be displayed or logged. This enhances the class's integration with Java's standard libraries and debugging tools.
+- This class can serve as a building block in larger applications where user management and event scheduling are key features, highlighting its utility in diverse software development contexts.
+
+------
+
+The `XMLReader` class serves as a utility for parsing user and event information from an XML file to construct a `User` object complete with a detailed schedule of events. This class is a crucial component for applications that require loading user schedules and associated events from external XML sources, offering a way to dynamically populate the application's data structures. Below is a detailed documentation of its structure and functionalities:
+
+### Class Overview: XMLReader
+- **Purpose:** To read user and event information from an XML file, creating a `User` object that includes a schedule populated with events defined in the XML file.
+
+### Methods
+- **`static User readXML(String path)`**
+  - Reads an XML document specified by the `path` parameter to extract user and event information. It constructs a `User` object representing the schedule owner, including their schedule populated with events. The method processes each event node within the XML, extracting details such as event name, location, timing, online status, and a list of invited users, to create `Event` objects and add them to the user's schedule.
+  - **Parameters:**
+    - `path`: The file path of the XML document to be read.
+  - **Returns:** A `User` object representing the owner of the schedule, populated with events extracted from the XML file.
+  - **Throws:** `RuntimeException` if an error occurs during XML parsing or document processing. This ensures that calling methods are aware of potential failures in the XML reading process.
+
+### Usage and Behavior
+- The `readXML` method encapsulates the process of parsing an XML document, leveraging the Java DOM API to navigate the XML structure and extract necessary data. This method is a key integration point for systems that need to load scheduling data from external sources, offering a bridge between static XML documents and dynamic application data structures.
+- By creating both `User` and `Event` objects based on the contents of the XML file, this class enables complex scheduling information to be imported into an application, making it particularly useful for initializing the state of scheduling or calendar management applications with predefined data.
+
+### Design Considerations
+- The use of a static method for XML reading highlights the utility nature of the `XMLReader` class, suggesting that it does not maintain state and is designed to be called without instantiation. This design choice is aligned with the class's role as a data loader rather than a component of the application's core logic.
+- Error handling within the method throws a `RuntimeException` upon encountering any issues during XML parsing or processing. This approach simplifies error handling for calling methods but requires that users of the `XMLReader` class be prepared to handle such unchecked exceptions, ensuring robustness in application design.
+- The class directly interacts with the DOM API to parse XML documents, reflecting a lower-level approach to XML processing. This allows for precise control over how XML data is interpreted and mapped to application-specific data structures but also implies that callers must adhere to the expected XML schema for successful parsing.
+
+### Integration with Other Classes
+- Integration with the `User`, `Schedule`, and `Event` classes demonstrates the interconnected nature of the application's data model. `XMLReader` acts as a conduit for transforming external XML data into instances of these classes, bridging the gap between static data representations and dynamic, in-memory objects.
+- The functionality provided by `XMLReader` complements the other classes by enabling the dynamic loading of scheduling data, enhancing the flexibility and usability of the scheduling system.
+
+------
+
+The `XMLWriter` class is specifically designed for writing user schedule information into an XML file. It converts the schedule of a specified user, including all associated events, into XML format and saves this representation to a specified file path. The class ensures that detailed information about each event, such as event names, start and end times, locations, and lists of invited users, is accurately captured in the XML output. Below is a detailed documentation of its structure and functionalities:
+
+### Class Overview: XMLWriter
+- **Purpose:** To generate an XML document from a user's schedule and save it to a file, encapsulating all relevant details of the schedule's events in XML format.
+
+### Methods
+- **`static void writeXML(User user, String filePath)`**
+  - This method creates an XML document representing the schedule of a given user, including comprehensive details of all events within the schedule. It then saves this document to a file located at the specified `filePath`.
+  - **Parameters:**
+    - `user`: The user whose schedule is to be written to an XML file. This user's schedule is traversed to extract event details.
+    - `filePath`: The path of the file where the generated XML content will be saved.
+  - The method utilizes `DocumentBuilderFactory` and `DocumentBuilder` to create a new XML document. It constructs a hierarchical structure reflecting the user's schedule and the details of each event, using `Element` nodes to represent the schedule and its events in XML format.
+  - After constructing the XML structure, the method uses `TransformerFactory` and `Transformer` to convert the DOM representation into XML text, formatting the output for readability with indentation, and writes the XML to the specified file path.
+
+- **`private static void createChildElement(Document doc, Element parent, String tagName, String textContent)`**
+  - A utility method that simplifies the DOM manipulation process by creating a child element with the specified tag name and text content, and appending it to a given parent element.
+  - **Parameters:**
+    - `doc`: The `Document` object within which the new element is created. This object represents the XML document being constructed.
+    - `parent`: The parent `Element` to which the new child element will be appended.
+    - `tagName`: The tag name for the new element.
+    - `textContent`: The text content for the new element.
+
+### Usage and Behavior
+- The `writeXML` method serves as the primary interface of the `XMLWriter` class, offering a straightforward way to serialize a user's schedule into XML format. By iterating over each event in the user's schedule, the method ensures that all relevant details are captured in the XML document.
+- The method organizes the XML document in a structured manner, reflecting the hierarchical relationship between the schedule, events, and event details. This structured approach not only facilitates readability of the XML document but also enables easy parsing by other software components or systems.
+- The use of `createChildElement` within `writeXML` highlights an efficient approach to DOM manipulation, reducing code redundancy and improving readability by abstracting the common pattern of element creation and text content assignment.
+
+### Design Considerations
+- Employing static methods emphasizes the utility nature of the `XMLWriter` class, indicating its stateless functionality designed for direct invocation without needing an instance of the class.
+- The decision to catch and print exceptions within `writeXML` allows the method to handle errors gracefully, providing debug information without halting execution. However, in more complex applications, it might be beneficial to throw custom exceptions to allow calling code to manage errors more flexibly.
+- This class can be easily integrated into larger applications requiring export functionality for user schedules, making it a versatile component for a wide range of applications involving user event management and scheduling.
+
+
+# Assignment 6
+
+## View Architecture
+
+### Overview
+Our view layer adheres to MVC principles, ensuring separation of concerns. It's designed for scalability, modularity, and a streamlined user experience.
+
+### Interfaces
+- `PlannerGrid`: Standardizes calendar grid rendering.
+- `PopUpFrame`: Guarantees a uniform rendering method for pop-up dialogs.
+
+### Implementations
+- `CalendarUI`: Implements `PlannerGrid`, managing calendar visualization. Integrates with `ReadOnlyPlannerModel` for a read-only view of event data, represented as color-coded blocks on a `JTable`.
+- `EventFrame`: Extends `JFrame` and implements `PopUpFrame`. It supports event creation and modification, handling null `event` objects for new entries and non-null for edits.
+
+### Model Integration
+Getters and setters were added to model classes for controlled data access and modification, aligning with secure MVC interactions.
+
+### Summary
+The view's structured approach with interfaces and class implementations ensures a consistent and reliable user interface, while model updates enhance data interaction within MVC constraints.
+
